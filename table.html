@@ -1,0 +1,92 @@
+
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>COVID table</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript">
+        function getData() {
+            const url = "https://api.covid19api.com/summary";
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const global = data.Global;
+                    const countries = data.Countries;
+                    $(document).ready(function () {
+                    $('#example').DataTable();
+                     });
+                    // Create a table of total cases by country
+                    const countryNames = countries.map(country => country.Country);
+                    const totalCases = countries.map(country => country.TotalConfirmed);
+
+                    const tableRows = countries.map(country => {
+                        return `
+                        <tr>
+                <td>${country.Country}</td>
+                <td>${country.TotalConfirmed}</td>
+                <td>${country.TotalDeaths}</td>
+                <td>${country.TotalRecovered}</td>
+                       </tr>`;
+                    });
+
+                    const tableBody = document.querySelector("tbody");
+                    tableBody.innerHTML = tableRows.join("");
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+
+        }
+    </script>
+<style>
+    .table{
+        position: relative;
+        width: 100%;
+        padding:0 20px 20px 0 ;
+    }
+    
+</style>
+</head>
+
+<body onload="getData()">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="total-cases-chart"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="global-data-chart"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table" id="example">
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Total Confirmed Cases</th>
+                            <th>Total Deaths</th>
+                            <th>Total Recoveries</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- jslinks -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>   
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>   
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+     
+ 
+
+</body>
+</html>
